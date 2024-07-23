@@ -51,8 +51,11 @@ public class GoToX extends Command {
     m_pose = m_odometry.update(gyroAngle, m_drivetrain.m_leftEncoder.getDistance(), m_drivetrain.m_rightEncoder.getDistance());
 
     var chassisSpeeds = new ChassisSpeeds();
-    if ((m_drivetrain.m_gyro.getAngleZ() > 85 && m_drivetrain.m_gyro.getAngleZ() < 95) == false && (m_drivetrain.m_gyro.getAngleZ() > 265 && m_drivetrain.m_gyro.getAngleZ() < 275) == false) {
-      chassisSpeeds = new ChassisSpeeds(0, 0, 5.0);
+
+    double distanceFrom90Angle = Math.abs(90 - m_drivetrain.m_gyro.getAngleZ());
+    double distanceFrom270Angle = Math.abs(270 - m_drivetrain.m_gyro.getAngleZ());
+    if (distanceFrom270Angle <= Constants.ACCEPTABLE_ANGLE_DIFFERENCE || distanceFrom90Angle <= Constants.ACCEPTABLE_ANGLE_DIFFERENCE) {
+      chassisSpeeds = new ChassisSpeeds(0, 0, 3.0);
     }
     else {
       double sign = Math.copySign(1, m_distance - m_pose.getX());

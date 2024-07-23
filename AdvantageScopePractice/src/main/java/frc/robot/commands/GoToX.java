@@ -74,7 +74,7 @@ public class GoToX extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.floor(m_pose.getX()) > m_distance - Constants.GO_TO_X_IS_FINISHED_ACCEPTABLE_DISTANCE_MARGIN 
-      && Math.floor(m_pose.getX()) < m_distance + Constants.GO_TO_X_IS_FINISHED_ACCEPTABLE_DISTANCE_MARGIN;
+    double distanceFromGoal = Math.abs(m_distance - m_pose.getX());
+    return distanceFromGoal <= Constants.GO_TO_X_IS_FINISHED_ACCEPTABLE_DISTANCE_MARGIN;
   }
 }

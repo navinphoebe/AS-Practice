@@ -55,13 +55,8 @@ public class GoToX extends Command {
       chassisSpeeds = new ChassisSpeeds(0, 0, 5.0);
     }
     else {
-      // If statement for if the robot should move forward or backward
-      if (m_pose.getX() > m_distance) {
-        chassisSpeeds = new ChassisSpeeds(-.6, 0, 0);
-      } 
-      else if (m_pose.getX() < m_distance) {
-        chassisSpeeds = new ChassisSpeeds(.6, 0, 0);
-      }
+      double sign = Math.copySign(1, m_distance - m_pose.getX());
+      chassisSpeeds = new ChassisSpeeds(.6 * sign, 0, 0);
     }
     DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(chassisSpeeds);
     m_drivetrain.tankDrive(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);

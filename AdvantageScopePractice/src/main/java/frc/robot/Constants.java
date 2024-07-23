@@ -18,4 +18,5 @@ public final class Constants {
   }
 
 public static final double GO_TO_X_IS_FINISHED_ACCEPTABLE_DISTANCE_MARGIN = .5;
+public static final int ACCEPTABLE_ANGLE_DIFFERENCE = 5;
 }

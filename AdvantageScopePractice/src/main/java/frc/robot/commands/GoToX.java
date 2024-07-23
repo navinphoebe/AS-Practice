@@ -27,7 +27,7 @@ public class GoToX extends Command {
     m_distance = distance;
     m_drivetrain = drivetrain;
     m_kinematics =
-      new DifferentialDriveKinematics(Units.inchesToMeters(6.0));
+      new DifferentialDriveKinematics(Units.inchesToMeters(Constants.XRP_TRACK_WIDTH));
     m_odometry = new DifferentialDriveOdometry(
       new Rotation2d(),
       m_drivetrain.m_leftEncoder.getDistance(), m_drivetrain.m_rightEncoder.getDistance(),
@@ -55,11 +55,11 @@ public class GoToX extends Command {
     double distanceFrom90Angle = Math.abs(90 - m_drivetrain.m_gyro.getAngleZ());
     double distanceFrom270Angle = Math.abs(270 - m_drivetrain.m_gyro.getAngleZ());
     if (distanceFrom270Angle <= Constants.ACCEPTABLE_ANGLE_DIFFERENCE || distanceFrom90Angle <= Constants.ACCEPTABLE_ANGLE_DIFFERENCE) {
-      chassisSpeeds = new ChassisSpeeds(0, 0, 3.0);
+      chassisSpeeds = new ChassisSpeeds(0, 0, Constants.GOTOX_RADIANS_SPEED);
     }
     else {
       double sign = Math.copySign(1, m_distance - m_pose.getX());
-      chassisSpeeds = new ChassisSpeeds(.6 * sign, 0, 0);
+      chassisSpeeds = new ChassisSpeeds(Constants.MAX_XRP_VELOCITY * sign, 0, 0);
     }
     DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(chassisSpeeds);
     m_drivetrain.tankDrive(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);

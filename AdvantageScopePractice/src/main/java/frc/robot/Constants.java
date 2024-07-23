@@ -19,4 +19,7 @@ public final class Constants {
 
 public static final double GO_TO_X_IS_FINISHED_ACCEPTABLE_DISTANCE_MARGIN = .5;
 public static final int ACCEPTABLE_ANGLE_DIFFERENCE = 5;
+public static final double MAX_XRP_VELOCITY = .6;
+public static final double GOTOX_RADIANS_SPEED = 3.0;
+public static final double XRP_TRACK_WIDTH = 6.0;
 }

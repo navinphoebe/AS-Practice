@@ -4,26 +4,12 @@
 
 package frc.robot;
 
-
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,11 +17,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
+
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -44,27 +32,9 @@ public class Robot extends LoggedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-
-    // Starts recording to data log
     DataLogManager.start();
-
-// Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
-
-    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
-
-if (isReal()) {
-    Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-    Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-    new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
-} else {
-    setUseTiming(false); // Run as fast as possible
-    String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-    Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-    Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
-}
-  Logger.start();
+    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -78,10 +48,9 @@ if (isReal()) {
   public void robotPeriodic() {
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // and running subsystem periodic() methods.This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-    
+    CommandScheduler.getInstance().run();  
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

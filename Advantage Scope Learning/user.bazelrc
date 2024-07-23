@@ -1,2 +1,0 @@
-startup --output_user_root=C:\\bazelroot
-build --features=compiler_param_file

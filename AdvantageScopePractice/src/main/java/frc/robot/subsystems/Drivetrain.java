@@ -6,16 +6,30 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Derivative;
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 public class Drivetrain extends SubsystemBase {
   private static final double kGearRatio =
@@ -23,6 +37,22 @@ public class Drivetrain extends SubsystemBase {
   private static final double kCountsPerMotorShaftRev = 12.0;
   private static final double kCountsPerRevolution = kCountsPerMotorShaftRev * kGearRatio; // 585.0
   private static final double kWheelDiameterInch = 2.3622; // 60 mm
+  public static final double ksVolts = 0.01;
+  public static final double kvVoltSecondsPerMeter = .2;
+  public static final double kaVoltSecondsSquaredPerMeter = 0.1;
+  public static final double kPDriveVel = 8.5;
+
+  public static final double kTrackwidthMeters = 0.016;
+  public static final DifferentialDriveKinematics kDriveKinematics =
+    new DifferentialDriveKinematics(kTrackwidthMeters);
+
+  public static final double kMaxSpeedMetersPerSecond = .53;
+  public static final double kMaxAccelerationMetersPerSecondSquared = .5;
+
+  public static final double kRamseteB = 2;
+  public static final double kRamseteZeta = 0.7;
+
+  public Pose2d m_pose = new Pose2d(0, 0, new Rotation2d());
 
   // The XRP has the left and right motors set to
   // channels 0 and 1 respectively
@@ -58,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
 
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
-
+  
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     SendableRegistry.addChild(m_diffDrive, m_leftMotor);
@@ -71,7 +101,6 @@ public class Drivetrain extends SubsystemBase {
 
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
-    // Uses (I think) encoder ticks
     m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
     resetEncoders();
 
@@ -93,13 +122,25 @@ public class Drivetrain extends SubsystemBase {
     m_rightMotor.set(rightSpeed);
   }
 
+  public void resetOdometry(Pose2d pose) {
+    m_pose = pose;
+  }
+
   public void resetEncoders() {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
   }
 
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getRate(), m_rightEncoder.getRate());
+  }
+
   public int getLeftEncoderCount() {
     return m_leftEncoder.get();
+  }
+
+  public Pose2d getPose() {
+    return m_pose;
   }
 
   public int getRightEncoderCount() {
@@ -217,7 +258,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     updateEncoderPeriodics();
     var gyroAngle = new Rotation2d(Math.toRadians(m_gyro.getAngleZ()));
-    var m_pose = m_odometry.update(gyroAngle,
+    m_pose = m_odometry.update(gyroAngle,
     m_leftEncoder.getDistance(),
     m_rightEncoder.getDistance());
 

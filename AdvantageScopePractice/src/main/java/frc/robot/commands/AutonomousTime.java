@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class AutonomousTime extends SequentialCommandGroup {
   /**
@@ -17,27 +19,7 @@ public class AutonomousTime extends SequentialCommandGroup {
    */
   public AutonomousTime(Drivetrain drivetrain) {
     addCommands(
-        /* new DriveTime(.1, .5, drivetrain),
-        new DriveTime(.2, .5, drivetrain),
-        new DriveTime(.3, .5, drivetrain),
-        new DriveTime(.4, .5, drivetrain),
-        new DriveTime(.5, .5, drivetrain),
-        new DriveTime(.6, .5, drivetrain),
-        new DriveTime(.7, .5, drivetrain),
-        new DriveTime(.8, .5, drivetrain),
-        new DriveTime(.9, .5, drivetrain),
-        new DriveTime(1, .5, drivetrain),
-        new DriveTime(-1, .5, drivetrain),
-        new DriveTime(-0.9, .5, drivetrain),
-        new DriveTime(-0.8, .5, drivetrain),
-        new DriveTime(-0.7, .5, drivetrain),
-        new DriveTime(-0.6, .5, drivetrain),
-        new DriveTime(-0.5, .5, drivetrain),
-        new DriveTime(-0.4, .5, drivetrain),
-        new DriveTime(-0.3, .5, drivetrain),
-        new DriveTime(-0.2, .5, drivetrain),
-        new DriveTime(-0.1, .5, drivetrain)*/
-        new GoToX(drivetrain, 10));
+        );
 
   }
 }
